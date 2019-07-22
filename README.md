@@ -14,4 +14,14 @@
 - They give internships every year for students in software development and another fields
 - Also their trainees have to make a project to make sure that all things are clearly explained.
 
+# Project
+
+- This project will be implemented by MVC .Net framework.
+- Currently the idea of the project is not set yet.
+- The main target of the project is making sure that all things is covered like:
+	- Dealing with git.
+	- Using MVC .Net.
+	- Using simple design patterns.
+	- Using simple front end scripts like HTML and CSS.
+
 
