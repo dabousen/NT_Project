@@ -2,9 +2,9 @@
  But first we have to make sure that our team members know how to use GitHub so here are some tasks:
  
   - [x] Belal will push an empty MVC .Net Project.
-  - [ ] Doaa takes the project and edits it then pushes her edits.
-  - [ ] Belal takes a branch from the project and edits it.
-  - [ ] Yara edits on the master branch and push her edits.
+  - [x] Doaa takes the project and edits it then pushes her edits.
+  - [x] Belal takes a branch from the project and edits it.
+  - [ ] Yara edits on the master branch and pushes her edits.
   - [ ] Belal will merge his branch with the master branch.
   - [ ] Start doing the project
 
