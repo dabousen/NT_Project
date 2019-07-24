@@ -5,7 +5,7 @@
   - [x] Doaa takes the project and edits it then pushes her edits.
   - [x] Belal takes a branch from the project and edits it.
   - [x] Yara edits on the master branch and pushes her edits.
-  - [ ] Belal will merge his branch with the master branch.
+  - [x] Belal will merge his branch with the master branch.
   - [ ] Start doing the project
 
 # National Technology
