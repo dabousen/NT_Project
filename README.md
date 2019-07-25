@@ -16,6 +16,7 @@
 
 # Project
 
+- The project will be like [Facebook](https://facebook.com)
 - This project will be implemented by MVC .Net framework.
 - Currently the idea of the project is not set yet.
 - The main target of the project is making sure that all things is covered like:
@@ -25,3 +26,24 @@
 	- Using simple front end scripts like HTML and CSS.
 
 
+#Tasks:
+
+- Task 1 : Deadline 26/07/2019 10:00 PM
+- Every team member should think what classes should we add in the project like (Accounts , friends and comments ...etc)
+	- [ ] Belal
+	- [ ] Mahmoud
+	- [ ] Yara
+	- [ ] Doaa
+
+
+- Task 2 : Deadline 27/07/2019 11:59 PM
+- Every team member has to do some tasks:
+
+	- [ ] Belal:
+		- To be defined.
+	- [ ] Mahmoud:
+		- To be defined.
+	- [ ] Yara:
+		- To be defined.
+	- [ ] Doaa:
+		- To be defined.
