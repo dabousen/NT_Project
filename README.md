@@ -18,7 +18,6 @@
 
 - The project will be like [Facebook](https://facebook.com)
 - This project will be implemented by MVC .Net framework.
-- Currently the idea of the project is not set yet.
 - The main target of the project is making sure that all things is covered like:
 	- Dealing with git.
 	- Using MVC .Net.
