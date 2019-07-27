@@ -39,5 +39,5 @@
 - Every team member has to implement the whole class diagram individually :
 
 	- [x] Belal
-	- [] Mahmoud
+	- [ ] Mahmoud
 	- [ ] Doaa
