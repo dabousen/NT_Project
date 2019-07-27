@@ -32,7 +32,7 @@
 	- [x] Belal
 	- [x] Mahmoud
 	- [ ] ~~Yara~~
-	- [x] ~~Doaa~~
+	- [x] Doaa
 
 
 - # Task 2 : Deadline 27/07/2019 11:59 PM
@@ -40,4 +40,4 @@
 
 	- [x] Belal
 	- [ ] Mahmoud
-	- [ ] Doaa
+	- [x] Doaa
