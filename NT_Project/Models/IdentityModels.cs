@@ -20,10 +20,15 @@ namespace NT_Project.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+        public ApplicationDbContext(): base("FacebookDB")
         {
+            Database.SetInitializer<ApplicationDbContext>(new CreateDatabaseIfNotExists<ApplicationDbContext>());
         }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Friend> Friends { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Interaction> Interactions { get; set; }
+ 
 
         public static ApplicationDbContext Create()
         {
