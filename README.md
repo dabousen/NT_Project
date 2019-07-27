@@ -36,13 +36,8 @@
 
 
 - # Task 2 : Deadline 27/07/2019 11:59 PM
-- Every team member has to do some tasks:
+- Every team member has to implement the whole class diagram individually :
 
-	- [ ] Belal:
-		- To be defined.
-	- [ ] Mahmoud:
-		- To be defined.
-	- [ ] Yara:
-		- To be defined.
-	- [ ] Doaa:
-		- To be defined.
+	- [x] Belal
+	- [] Mahmoud
+	- [ ] Doaa
