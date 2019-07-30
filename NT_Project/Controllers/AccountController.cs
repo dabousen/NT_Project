@@ -1,25 +1,144 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NT_Project.Models;
+using NT_Project.ViewModels;
+using WebGrease.Css.Ast.Selectors;
 
+//password -> NT@belal1
 namespace NT_Project.Controllers
 {
-    [Authorize]
+   [Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
+        protected ApplicationDbContext _Context { get; set; }
+
+        //-----------------------------------------------------------------------------
+        //public ActionResult Home()
+        //{
+        //    return View();
+        //}
+
+        public List<FriendViewModel> GetFriends()
+        {
+            var currentId = User.Identity.GetUserId();
+
+            //var final = (from acc in _Context.Users
+            //        join rel in _Context.Relationships on acc.Id equals rel.FirstId
+            //        where (rel.FirstId == currentId)
+            //        select new
+            //        {
+            //            Title = acc.Title,
+            //            FirstName = acc.FirstName,
+            //            LastName = acc.LastName,
+            //            Id = acc.Id,
+            //            Type = rel.type
+            //        }).ToList().Select(acc => new FriendViewModel
+            //        {
+            //            Title = acc.Title,
+            //            FirstName = acc.FirstName,
+            //            LastName = acc.LastName,
+            //            Id = acc.Id,
+            //            Type = acc.Type
+            //        }).ToList();
+            var ret = (from acc in _Context.Users
+                join rel in _Context.Relationships on acc.Id equals rel.FirstId
+                select new
+                {
+                    FirstId = rel.FirstId,
+                    Title = acc.Title,
+                    FirstName = acc.FirstName,
+                    LastName = acc.LastName,
+                    Id = rel.SecondId,
+                    Type = rel.type
+                });
+
+            var final = (from sec in _Context.Users
+                join  r in ret on sec.Id equals r.Id
+                where (r.FirstId == currentId)
+                select new
+                {
+                    Title = sec.Title,
+                    FirstName = sec.FirstName,
+                    LastName = sec.LastName,
+                    Id = r.Id,
+                    Type = r.Type
+                }).ToList().Select(acc => new FriendViewModel
+            {
+                Title = acc.Title,
+                FirstName = acc.FirstName,
+                LastName = acc.LastName,
+                Id = acc.Id,
+                Type = acc.Type
+            }).ToList();
+            return final;
+        }
+        public List<FriendViewModel> GetAll()
+        {
+            var currentId = User.Identity.GetUserId();
+
+            return (from acc in _Context.Users
+                where (acc.Id != currentId)
+                select new
+                {
+                    Title = acc.Title,
+                    FirstName = acc.FirstName,
+                    LastName = acc.LastName,
+                    Id = acc.Id,
+                    Type = 1
+                }).ToList().Select(acc => new FriendViewModel
+            {
+                Title = acc.Title,
+                FirstName = acc.FirstName,
+                LastName = acc.LastName,
+                Id = acc.Id,
+                Type = null
+            }).ToList();
+        }
+        public ActionResult Friends()
+        {
+            return View(GetFriends());
+        }
+
+        public ActionResult notFriends()
+        {
+            ViewBag.currUser = User.Identity.GetUserId();
+            var ret = GetAll().Where(acc => ! GetFriends().Contains(acc,new FriendViewCompare())).ToList();
+            return View(ret);
+        }
+
+        public ActionResult AddRelation(string first, string second, int type)
+        {
+            if (String.Compare(first,second) == 1)
+            {
+                string tmp = first;
+                first = second;
+                second = tmp;
+                type = -type;
+            }
+            _Context.Relationships.Add(new Relationship() {FirstId = first, SecondId = second, type = type});
+            _Context.SaveChanges();
+
+            return RedirectToAction("Friends");
+        }
+        //-----------------------------------------------------------------------------
         public AccountController()
         {
+            this._Context = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -73,9 +192,10 @@ namespace NT_Project.Controllers
                 return View(model);
             }
 
+            var user = await UserManager.FindByEmailAsync(model.Email);
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -151,10 +271,26 @@ namespace NT_Project.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Gender = model.Gender,
+                    BirthDay = model.Birthday,
+                    City = model.City,
+                    Title = model.Title,
+                };
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+
+                    //-------------------------
+                    
+                    
+                    
+                    //-------------------------
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -418,6 +554,7 @@ namespace NT_Project.Controllers
                     _signInManager.Dispose();
                     _signInManager = null;
                 }
+                _Context.Dispose();
             }
 
             base.Dispose(disposing);

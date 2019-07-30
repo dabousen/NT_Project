@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NT_Project.Models
@@ -64,6 +65,50 @@ namespace NT_Project.Models
 
     public class RegisterViewModel
     {
+
+        [Required]
+        [Display(Name = "Title")]
+        public string Title { get; set; }
+
+
+        [Required]
+        [Display(Name = "First Name")]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [DataType(DataType.Text)]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        [DataType(DataType.Text)]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Username")]
+        [DataType(DataType.Text)]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        public string Username { get; set; }
+
+        [Required]
+        [Display(Name = "City")]
+        [DataType(DataType.Text)]
+        public string City { get; set; }
+
+        [Required]
+        [Display(Name = "Gender")]
+        [DataType(DataType.Text)]
+        public string Gender { get; set; }
+
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
+
+
+        [Required]
+        [Display(Name = "Birthday")]
+        [DataType(DataType.Date)]
+        public DateTime Birthday { get; set; }
+
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

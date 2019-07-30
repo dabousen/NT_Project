@@ -14,13 +14,18 @@ namespace NT_Project.Models
 
         [Key]
         [Column(Order = 1)]
-        public int PostID { get; set; }
+        [ForeignKey("Post")]
+        public string PostId { get; set; }
+        public virtual Post Post { get; set; }
+
+
         [Key]
         [Column(Order = 2)]
-        public int AccountID { get; set; }
+        [ForeignKey("ApplicationUser")]
+        public string ApplicationUserId { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
-        public virtual Post Post { get; set; }
-        public virtual Account Account { get; set; }
+
 
 
     }
