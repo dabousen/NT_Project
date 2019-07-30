@@ -29,20 +29,15 @@
 
 - # Task 1 : Deadline 26/07/2019 10:00 PM
 - Every team member should think what classes should we add in the project like (Accounts , friends and comments ...etc)
-	- [ ] Belal
-	- [ ] Mahmoud
-	- [ ] Yara
-	- [ ] Doaa
+	- [x] Belal
+	- [x] Mahmoud
+	- [ ] ~~Yara~~
+	- [x] Doaa
 
 
 - # Task 2 : Deadline 27/07/2019 11:59 PM
-- Every team member has to do some tasks:
+- Every team member has to implement the whole class diagram individually :
 
-	- [ ] Belal:
-		- To be defined.
-	- [ ] Mahmoud:
-		- To be defined.
-	- [ ] Yara:
-		- To be defined.
-	- [ ] Doaa:
-		- To be defined.
+	- [x] Belal
+	- [ ] Mahmoud
+	- [x] Doaa
