@@ -23,5 +23,8 @@ namespace NT_Project.Models
 
         [InverseProperty("Post")]
         public virtual ICollection<Interaction> Interactions { get; set; }
+
+        [InverseProperty("Post")]
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

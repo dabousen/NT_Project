@@ -10,8 +10,6 @@ namespace NT_Project.Models
     public class Interaction
     {
         public int ActionType { get; set; } //1 -> Like , 2 -> Dislike
-        public DateTime Date { get; set; }
-
         [Key]
         [Column(Order = 1)]
         [ForeignKey("Post")]

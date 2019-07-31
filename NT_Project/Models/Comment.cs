@@ -17,5 +17,9 @@ namespace NT_Project.Models
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
 
+        [ForeignKey("Post")]
+        public string PostId { get; set; }
+        public virtual Post Post { get; set; }
+
     }
 }

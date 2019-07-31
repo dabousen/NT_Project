@@ -208,5 +208,3 @@ E:\NT_project\NT_Project\NT_Project\obj\Debug\NT_Project.csproj.CoreCompileInput
 E:\NT_project\NT_Project\NT_Project\obj\Debug\NT_Project.csproj.CopyComplete
 E:\NT_project\NT_Project\NT_Project\obj\Debug\NT_Project.dll
 E:\NT_project\NT_Project\NT_Project\obj\Debug\NT_Project.pdb
-S:\miscellaneous\National_Technology\NT_Project\NT_Project\obj\Debug\NT_Project.Migrations.CreateDatabase.resources
-S:\miscellaneous\National_Technology\NT_Project\NT_Project\obj\Debug\NT_Project.csproj.GenerateResource.cache
