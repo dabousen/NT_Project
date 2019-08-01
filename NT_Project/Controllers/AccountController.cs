@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Migrations;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -22,105 +23,124 @@ namespace NT_Project.Controllers
    [Authorize]
     public class AccountController : Controller
     {
+        private string AfterActionView = "~/Views/Home/Index.cshtml";
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
         protected ApplicationDbContext _Context { get; set; }
-
         //-----------------------------------------------------------------------------
         //public ActionResult Home()
         //{
         //    return View();
         //}
-
-        public List<FriendViewModel> GetFriends()
+        public List<RelationsModel> GetRelated(string id)
         {
             var currentId = User.Identity.GetUserId();
+            var user = _Context.Users.Find(currentId);
 
-            //var final = (from acc in _Context.Users
-            //        join rel in _Context.Relationships on acc.Id equals rel.FirstId
-            //        where (rel.FirstId == currentId)
-            //        select new
-            //        {
-            //            Title = acc.Title,
-            //            FirstName = acc.FirstName,
-            //            LastName = acc.LastName,
-            //            Id = acc.Id,
-            //            Type = rel.type
-            //        }).ToList().Select(acc => new FriendViewModel
-            //        {
-            //            Title = acc.Title,
-            //            FirstName = acc.FirstName,
-            //            LastName = acc.LastName,
-            //            Id = acc.Id,
-            //            Type = acc.Type
-            //        }).ToList();
-            var ret = (from acc in _Context.Users
-                join rel in _Context.Relationships on acc.Id equals rel.FirstId
-                select new
-                {
-                    FirstId = rel.FirstId,
-                    Title = acc.Title,
-                    FirstName = acc.FirstName,
-                    LastName = acc.LastName,
-                    Id = rel.SecondId,
-                    Type = rel.type
-                });
-
-            var final = (from sec in _Context.Users
-                join  r in ret on sec.Id equals r.Id
-                where (r.FirstId == currentId)
-                select new
-                {
-                    Title = sec.Title,
-                    FirstName = sec.FirstName,
-                    LastName = sec.LastName,
-                    Id = r.Id,
-                    Type = r.Type
-                }).ToList().Select(acc => new FriendViewModel
+            var firstRelations = user.FirstRelationships.ToList();
+            var secondRelations = user.SecondRelationships.ToList();
+            var ret = new List<RelationsModel>();
+            
+            foreach (var friend in firstRelations)
             {
-                Title = acc.Title,
-                FirstName = acc.FirstName,
-                LastName = acc.LastName,
-                Id = acc.Id,
-                Type = acc.Type
-            }).ToList();
-            return final;
-        }
-        public List<FriendViewModel> GetAll()
-        {
-            var currentId = User.Identity.GetUserId();
-
-            return (from acc in _Context.Users
-                where (acc.Id != currentId)
-                select new
-                {
-                    Title = acc.Title,
-                    FirstName = acc.FirstName,
-                    LastName = acc.LastName,
-                    Id = acc.Id,
-                    Type = 1
-                }).ToList().Select(acc => new FriendViewModel
+                ret.Add(new RelationsModel { User = friend.Second, Type = friend.type });
+            }
+            foreach (var friend in secondRelations)
             {
-                Title = acc.Title,
-                FirstName = acc.FirstName,
-                LastName = acc.LastName,
-                Id = acc.Id,
-                Type = null
-            }).ToList();
+                ret.Add(new RelationsModel{User = friend.First,Type = friend.type*-1});
+            }
+            return ret;
         }
         public ActionResult Friends()
         {
-            return View(GetFriends());
+            var related = GetRelated(User.Identity.GetUserId());
+            var ret = new List<ApplicationUser>();
+            foreach (var user in related)
+            {
+                if (user.Type == 0) ret.Add(user.User);
+            }
+            TempData["Text"] = "DeleteRequest";
+            TempData["Action"] = "DeleteRequest";
+            TempData["Controller"] = "Account";
+            return View("~/Views/Shared/_RelationsLayout.cshtml", ret);
         }
 
-        public ActionResult notFriends()
+        public ActionResult SentFriendRequests()
         {
-            ViewBag.currUser = User.Identity.GetUserId();
-            var ret = GetAll().Where(acc => ! GetFriends().Contains(acc,new FriendViewCompare())).ToList();
+            var related = GetRelated(User.Identity.GetUserId());
+            var ret = new List<ApplicationUser>();
+            foreach (var user in related)
+            {
+                if (user.Type == 1) ret.Add(user.User);
+            }
+            TempData["Text"] = "DeleteRequest";
+            TempData["Action"] = "DeleteRequest";
+            TempData["Controller"] = "Account";
+            return View("~/Views/Shared/_RelationsLayout.cshtml", ret);
+        }
+        public ActionResult RecievedFriendRequests()
+        {
+            var related = GetRelated(User.Identity.GetUserId());
+            var ret = new List<ApplicationUser>();
+            foreach (var user in related)
+            {
+                if (user.Type == -1) ret.Add(user.User);
+            }
+            TempData["Text"] = "AcceptRequest";
+            TempData["Action"] = "AcceptRequest";
+            TempData["Controller"] = "Account";
+            return View("~/Views/Shared/_RelationsLayout.cshtml", ret);
+        }
+       /* public ActionResult BlockedUsers()
+        {
+            var related = GetRelated(User.Identity.GetUserId());
+            var ret = new List<ApplicationUser>();
+            foreach (var user in related)
+            {
+                if (user.Type == 2) ret.Add(user.User);
+            }
             return View(ret);
+        }*/
+        public ActionResult NotFriends()
+        {
+            var user = _Context.Users.Find(User.Identity.GetUserId());
+            var related = GetRelated(User.Identity.GetUserId());
+            var all = _Context.Users.ToList();
+            var ret = new List<ApplicationUser>();
+
+            foreach (var curr in related)
+            {
+                curr.Type = -10;
+            }
+            foreach (var curr in all)
+            {
+                var tmp = new RelationsModel {Type = -10, User = curr};
+                if (related.Contains(tmp) == false) ret.Add(tmp.User);
+            }
+
+
+            TempData["Text"] = "SendRequest";
+            TempData["Action"] = "SendRequest";
+            TempData["Controller"] = "Account";
+            return View("~/Views/Shared/_RelationsLayout.cshtml",ret);
         }
 
+        public ActionResult SendRequest(string id)
+        {
+            AddRelation(User.Identity.GetUserId(), id, 1);
+            return View(AfterActionView);
+        }
+        public ActionResult AcceptRequest(string id)
+        {
+            AddRelation(User.Identity.GetUserId(), id, 0);
+            return View(AfterActionView);
+        }
+        public ActionResult DeleteRequest(string id)
+        {
+            AddRelation(User.Identity.GetUserId(), id, -10);
+            return View(AfterActionView);
+        }
         public ActionResult AddRelation(string first, string second, int type)
         {
             if (String.Compare(first,second) == 1)
@@ -130,10 +150,28 @@ namespace NT_Project.Controllers
                 second = tmp;
                 type = -type;
             }
-            _Context.Relationships.Add(new Relationship() {FirstId = first, SecondId = second, type = type});
-            _Context.SaveChanges();
+            if (type == -10 || type == 10)
+            {
+                var tmp = _Context.Relationships.Find(first, second);
 
-            return RedirectToAction("Friends");
+                if ( tmp != null)
+                    _Context.Relationships.Remove(tmp);
+
+
+            }
+            else
+            { 
+                var rel = _Context.Relationships.Find(first, second);
+                if (rel == null)
+                    _Context.Relationships.Add(new Relationship() {FirstId = first, SecondId = second, type = type});
+                else
+                {
+                    rel.type = type;
+                    //_Context.Relationships.AddOrUpdate(new Relationship() { FirstId = first, SecondId = second, type = type });
+                }
+            }
+            _Context.SaveChanges();
+            return RedirectToAction("Index","Home");
         }
         //-----------------------------------------------------------------------------
         public AccountController()

@@ -24,7 +24,7 @@ namespace NT_Project.Models
 
         /*
          0 -> friends
-         1 -> first request to second 3
+         1 -> first request to second 
          -1 -> second request to first
          2 -> first blocked second
          -2 -> second blocked first

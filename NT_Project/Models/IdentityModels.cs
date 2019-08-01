@@ -63,7 +63,7 @@ namespace NT_Project.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(): base("FacebookDataBase")
+        public ApplicationDbContext(): base("FB_DB")
         {
             Database.SetInitializer<ApplicationDbContext>(new CreateDatabaseIfNotExists<ApplicationDbContext>());
         }
@@ -77,9 +77,6 @@ namespace NT_Project.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<NT_Project.ViewModels.FriendViewModel> FriendViewModels { get; set; }
 
-
-        //public System.Data.Entity.DbSet<NT_Project.Models.ApplicationUser> ApplicationUsers { get; set; }
     }
 }
