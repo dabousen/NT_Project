@@ -39,5 +39,42 @@
 - Every team member has to implement the whole class diagram individually :
 
 	- [x] Belal
-	- [ ] Mahmoud
+	- [x] Mahmoud
 	- [x] Doaa
+
+- # Task 3 : Deadline 02/08/2019 06:00 PM
+- Every team member has to deliver a prototype of the front-end of the project
+
+	Views :
+	
+		 HomePage
+		
+		 Account Info (for logged in user and another user)
+		
+		 Current user Posts
+		
+		 Friends Posts
+		
+		 Friends List
+		
+		 Sent Request List
+		
+		 Blocked users
+		
+		 Pending Request List
+		
+		 Navigation Bar (Search, tabs, ... etc)
+		
+		 Edit Current user info
+		
+		 (Registeration - Login) Pages forms
+		
+		 Contact us Page
+		
+		 About Page
+		
+		
+	- [ ] Belal
+	- [ ] Mahmoud
+	- [ ] Doaa
+	- [ ] Yara
