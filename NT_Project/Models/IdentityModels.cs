@@ -77,6 +77,5 @@ namespace NT_Project.Models
             return new ApplicationDbContext();
         }
 
-
     }
 }
