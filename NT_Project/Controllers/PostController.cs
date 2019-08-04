@@ -12,10 +12,14 @@ namespace NT_Project.Controllers
 {
     public class PostController : Controller
     {
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
+        Logic Logic = new Logic();
+        ApplicationDbContext context = new ApplicationDbContext(); 
+        public ActionResult Index()
+        {
+            //var posts = Logic.GetFriendsPosts(User.Identity.GetUserId());
+            var posts = context.Posts.ToList();
+            return View("~/Views/Post.cshtml",posts);
+        }
 
 
 

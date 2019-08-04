@@ -48,10 +48,10 @@
 
                 <form class="navbar-form navbar-left" role="search" method="post">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="acc" name="acc" placeholder="Search For User">
+                        <input type="text" class="form-control" id="required" name="required" placeholder="Search For User">
                     </div>
 
-                    <input type="submit" class="btn btn-default" value="Create" onclick="location.href='@Url.Action("Index", "Home")'" />
+                    <input type="submit" class="btn btn-default" value="Search" onclick="location.href='@Url.Action("SearchResult", "Home")'" />
                 </form>
                 <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 <li>@Html.ActionLink("About", "About", "Home")</li>

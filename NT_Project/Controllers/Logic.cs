@@ -37,6 +37,10 @@ namespace NT_Project.Controllers
         //    }
         //    return ret;
         //}
+        public ApplicationUser GetUser(string id)
+        {
+            return _Context.Users.Find(id);
+        }
         public List<RelationsModel> GetRelations(string id)
         {
             var user = _Context.Users.Find(id);
@@ -92,7 +96,7 @@ namespace NT_Project.Controllers
             }
 
             var ret = ShuffleList(posts);
-            return posts;
+            return ret;
         }
         public bool AddRelation(string first, string second, int? type)
         {
@@ -133,9 +137,16 @@ namespace NT_Project.Controllers
             }
             return res;
         }
-        public List<ApplicationUser> SearchAccount(string required)
+        //public List<ApplicationUser> SearchAccount(string required)
+        //{
+        //    return _Context.Users
+        //        .Where(user => (user.FirstName.Contains(required) || user.LastName.Contains(required)) || user.PhoneNumber.Contains(required) || user.Email.Contains(required)).ToList();
+        //}
+        public List<ApplicationUser> SearchAccount(string required,string id)
         {
-            return _Context.Users
+            var list = NotRelated(id);
+            if (list == null) return null;
+            return list
                 .Where(user => (user.FirstName.Contains(required) || user.LastName.Contains(required)) || user.PhoneNumber.Contains(required) || user.Email.Contains(required)).ToList();
         }
         public List<E> ShuffleList<E>(List<E> inputList)
