@@ -10,12 +10,7 @@ namespace NT_Project.Controllers
     [AllowAnonymous]
     public class HomeController : Controller
     {
-        private ApplicationDbContext _context { get; set; }
 
-        public HomeController()
-        {
-            _context = new ApplicationDbContext();
-        }
         public ActionResult Index()
         {
             if (User.Identity.IsAuthenticated) return View("About");
@@ -24,9 +19,8 @@ namespace NT_Project.Controllers
         [HttpPost]
         public ActionResult Index(string acc)
         {
-            var res = _context.Users
-                .Where(user => (user.FirstName.Contains(acc) || user.LastName.Contains(acc)) || user.PhoneNumber.Contains(acc) || user.Email.Contains(acc)).ToList();
 
+            //return Logic.;
             return View("Contact");
         }
         public ActionResult About()

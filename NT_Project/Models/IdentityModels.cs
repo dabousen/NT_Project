@@ -70,7 +70,8 @@ namespace NT_Project.Models
         public DbSet<Relationship> Relationships { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Interaction> Interactions { get; set; }
- 
+
+        public DbSet<Comment> Comments { get; set; }
 
         public static ApplicationDbContext Create()
         {

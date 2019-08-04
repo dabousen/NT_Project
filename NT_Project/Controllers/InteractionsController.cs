@@ -14,21 +14,11 @@ namespace NT_Project.Controllers
         //{
         //    return View();
         //}
-        protected ApplicationDbContext _Context { get; set; }
+        protected Logic Logic = new Logic();
 
-        public InteractionsController()
-        {
-            _Context = new ApplicationDbContext();
-        }
         public ActionResult GetInteractions(string id)
         {
-            var currPost = _Context.Posts.Find(id);
-            List<Interaction> res = new List<Interaction>();
-            if (currPost != null)
-            {
-                res =  currPost.Interactions.ToList();
-            }
-            return View(res);
+            return View(Logic.GetInteractions(id));
         }
     }
 }

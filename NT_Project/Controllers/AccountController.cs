@@ -13,6 +13,7 @@ using System.Web.UI.WebControls;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using Microsoft.VisualBasic.Logging;
 using NT_Project.Models;
 using NT_Project.ViewModels;
 using WebGrease.Css.Ast.Selectors;
@@ -23,73 +24,46 @@ namespace NT_Project.Controllers
    [Authorize]
     public class AccountController : Controller
     {
+
         private string AfterActionView = "~/Views/Home/Index.cshtml";
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
-        protected ApplicationDbContext _Context { get; set; }
+        protected Logic Logic = new Logic();
         //-----------------------------------------------------------------------------
         //public ActionResult Home()
         //{
         //    return View();
         //}
-        public List<RelationsModel> GetRelated(string id)
+        public AccountController()
         {
-            var currentId = User.Identity.GetUserId();
-            var user = _Context.Users.Find(currentId);
 
-            var firstRelations = user.FirstRelationships.ToList();
-            var secondRelations = user.SecondRelationships.ToList();
-            var ret = new List<RelationsModel>();
-            
-            foreach (var friend in firstRelations)
-            {
-                ret.Add(new RelationsModel { User = friend.Second, Type = friend.type });
-            }
-            foreach (var friend in secondRelations)
-            {
-                ret.Add(new RelationsModel{User = friend.First,Type = friend.type*-1});
-            }
-            return ret;
+
         }
         public ActionResult Friends()
         {
-            var related = GetRelated(User.Identity.GetUserId());
-            var ret = new List<ApplicationUser>();
-            foreach (var user in related)
-            {
-                if (user.Type == 0) ret.Add(user.User);
-            }
             TempData["Text"] = "DeleteRequest";
             TempData["Action"] = "DeleteRequest";
             TempData["Controller"] = "Account";
+            var ret = Logic.GetRelatedUsers(User.Identity.GetUserId(), 0);
             return View("~/Views/Shared/_RelationsLayout.cshtml", ret);
         }
 
         public ActionResult SentFriendRequests()
         {
-            var related = GetRelated(User.Identity.GetUserId());
-            var ret = new List<ApplicationUser>();
-            foreach (var user in related)
-            {
-                if (user.Type == 1) ret.Add(user.User);
-            }
+            
             TempData["Text"] = "DeleteRequest";
             TempData["Action"] = "DeleteRequest";
             TempData["Controller"] = "Account";
+            var ret = Logic.GetRelatedUsers(User.Identity.GetUserId(), 1);
             return View("~/Views/Shared/_RelationsLayout.cshtml", ret);
         }
         public ActionResult RecievedFriendRequests()
         {
-            var related = GetRelated(User.Identity.GetUserId());
-            var ret = new List<ApplicationUser>();
-            foreach (var user in related)
-            {
-                if (user.Type == -1) ret.Add(user.User);
-            }
             TempData["Text"] = "AcceptRequest";
             TempData["Action"] = "AcceptRequest";
             TempData["Controller"] = "Account";
+            var ret = Logic.GetRelatedUsers(User.Identity.GetUserId(), -1);
             return View("~/Views/Shared/_RelationsLayout.cshtml", ret);
         }
        /* public ActionResult BlockedUsers()
@@ -104,80 +78,31 @@ namespace NT_Project.Controllers
         }*/
         public ActionResult NotFriends()
         {
-            var user = _Context.Users.Find(User.Identity.GetUserId());
-            var related = GetRelated(User.Identity.GetUserId());
-            var all = _Context.Users.ToList();
-            var ret = new List<ApplicationUser>();
-
-            foreach (var curr in related)
-            {
-                curr.Type = -10;
-            }
-            foreach (var curr in all)
-            {
-                var tmp = new RelationsModel {Type = -10, User = curr};
-                if (related.Contains(tmp) == false) ret.Add(tmp.User);
-            }
-
 
             TempData["Text"] = "SendRequest";
             TempData["Action"] = "SendRequest";
             TempData["Controller"] = "Account";
+            var ret = Logic.NotRelated(User.Identity.GetUserId());
             return View("~/Views/Shared/_RelationsLayout.cshtml",ret);
         }
 
         public ActionResult SendRequest(string id)
         {
-            AddRelation(User.Identity.GetUserId(), id, 1);
+            Logic.AddRelation(User.Identity.GetUserId(), id, 1);
             return View(AfterActionView);
         }
         public ActionResult AcceptRequest(string id)
         {
-            AddRelation(User.Identity.GetUserId(), id, 0);
+            Logic.AddRelation(User.Identity.GetUserId(), id, 0);
             return View(AfterActionView);
         }
         public ActionResult DeleteRequest(string id)
         {
-            AddRelation(User.Identity.GetUserId(), id, -10);
+            Logic.AddRelation(User.Identity.GetUserId(), id, null);
             return View(AfterActionView);
         }
-        public ActionResult AddRelation(string first, string second, int type)
-        {
-            if (String.Compare(first,second) == 1)
-            {
-                string tmp = first;
-                first = second;
-                second = tmp;
-                type = -type;
-            }
-            if (type == -10 || type == 10)
-            {
-                var tmp = _Context.Relationships.Find(first, second);
 
-                if ( tmp != null)
-                    _Context.Relationships.Remove(tmp);
-
-
-            }
-            else
-            { 
-                var rel = _Context.Relationships.Find(first, second);
-                if (rel == null)
-                    _Context.Relationships.Add(new Relationship() {FirstId = first, SecondId = second, type = type});
-                else
-                {
-                    rel.type = type;
-                    //_Context.Relationships.AddOrUpdate(new Relationship() { FirstId = first, SecondId = second, type = type });
-                }
-            }
-            _Context.SaveChanges();
-            return RedirectToAction("Index","Home");
-        }
         //-----------------------------------------------------------------------------
-        public AccountController()
-        {
-            this._Context = new ApplicationDbContext();
-        }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
@@ -592,7 +517,6 @@ namespace NT_Project.Controllers
                     _signInManager.Dispose();
                     _signInManager = null;
                 }
-                _Context.Dispose();
             }
 
             base.Dispose(disposing);
